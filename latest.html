@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Salesforce: Tips & Tricks — Dev Request Edition</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --navy:#0B2E4F;
+    --navy-deep:#081F38;
+    --sky:#00A9E0;
+    --paper:#F6F8FA;
+    --ink:#1D2939;
+    --ink-soft:#4A5568;
+    --line:#DCE3EA;
+    --good:#1E7A55;
+    --good-bg:#EAF6EF;
+    --bad:#B4472C;
+    --bad-bg:#FBEDE8;
+    --card:#FFFFFF;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',Arial,sans-serif;
+    font-size:15px;
+    line-height:1.48;
+  }
+
+  .sheet{
+    max-width:720px;
+    margin:0 auto;
+    background:var(--card);
+  }
+
+  /* ===== Masthead ===== */
+  .masthead{
+    background:var(--navy-deep);
+    color:#fff;
+    padding:24px 38px 20px;
+  }
+  .masthead-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:11px;
+    letter-spacing:.03em;
+    color:#8FB4D6;
+    margin-bottom:10px;
+  }
+  .masthead h1{
+    font-family:'Sora',Arial,sans-serif;
+    font-weight:800;
+    font-size:24px;
+    line-height:1.2;
+    margin:0 0 4px;
+    letter-spacing:-.01em;
+  }
+  .masthead h1 span{color:var(--sky);}
+  .masthead p.tagline{
+    margin:0;
+    font-size:15px;
+    color:#ffffff;
+    display: inline-block;
+  }
+
+  .content{padding:20px 38px 4px;}
+
+  /* ===== "Why it bounces" strip ===== */
+  .bounce-strip{
+    display:flex;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .bounce-card{
+    flex:1;
+    background:var(--bad-bg);
+    border-radius:10px;
+    padding:14px 16px;
+  }
+  .bounce-card .tag{
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.04em;
+    color:var(--bad);
+    margin-bottom:6px;
+    display:block;
+  }
+  .bounce-card b{
+    display:block;
+    color:var(--navy);
+    font-size:14px;
+    margin-bottom:3px;
+  }
+  .bounce-card span{
+    color:var(--ink-soft);
+    font-size:12.5px;
+  }
+
+  /* ===== Tip card grid ===== */
+  .grid-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.04em;
+    color:var(--good);
+    margin:4px 0 10px;
+    display:block;
+  }
+  .tip-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .tip-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+  }
+  .tip-card b{
+    display:block;
+    color:var(--navy);
+    font-size:13.5px;
+    margin-bottom:3px;
+  }
+  .tip-card span{
+    color:var(--ink-soft);
+    font-size:12.5px;
+  }
+  .tip-card.wide{grid-column:1 / -1;}
+
+  /* ===== Inline example ===== */
+  .mini-ex{
+    margin-top:8px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .mini-ex div{
+    border-radius:6px;
+    padding:6px 10px;
+    font-size:12.5px;
+    display:flex;
+    gap:8px;
+  }
+  .mini-ex .bad{background:var(--bad-bg);color:#7A3620;}
+  .mini-ex .good{background:var(--good-bg);color:#1B5A40;}
+  .mini-ex .mark{font-weight:800;}
+  .mini-ex .bad .mark{color:var(--bad);}
+  .mini-ex .good .mark{color:var(--good);}
+
+  /* ===== Priority note ===== */
+  .priority-note{
+    display:flex;
+    gap:10px;
+    background:#FFF7EA;
+    border:1px solid #F0DDB0;
+    border-radius:8px;
+    padding:12px 14px;
+    margin:4px 0 6px;
+    font-size:12.5px;
+    color:#7A5A16;
+  }
+  .priority-note b{color:#5C4110;}
+
+  /* ===== Priority criteria grid ===== */
+  .priority-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:10px;
+    margin:10px 0 6px;
+  }
+  .priority-col{
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    background:var(--paper);
+  }
+  .priority-col .p-head{
+    background:var(--navy);
+    color:#fff;
+    font-family:'Sora',Arial,sans-serif;
+    font-weight:700;
+    font-size:13px;
+    text-align:center;
+    padding:8px 6px;
+  }
+  .priority-col.p1 .p-head{background:var(--bad);}
+  .priority-col.p2 .p-head{background:#C9862F;}
+  .priority-col.p3 .p-head{background:var(--good);}
+  .priority-col ul{
+    margin:0;
+    padding:10px 14px 12px 20px;
+    list-style:disc;
+  }
+  .priority-col li{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-bottom:7px;
+    line-height:1.35;
+  }
+  .priority-col li:last-child{margin-bottom:0;}
+
+  /* ===== Footer ===== */
+  .footer{
+    padding:16px 38px 20px;
+    border-top:1px solid var(--line);
+    font-size:11px;
+    color:#8A94A3;
+    display:flex;
+    justify-content:space-between;
+  }
+
+  @media (max-width:520px){
+    .masthead,.content,.footer{padding-left:20px;padding-right:20px;}
+    .masthead h1{font-size:21px;}
+    .bounce-strip{flex-direction:column;}
+    .tip-grid{grid-template-columns:1fr;}
+    .priority-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="masthead">
+    <div class="masthead-top">
+      <span>SALESFORCE: TIPS &amp; TRICKS</span>
+      <span>Dev Request Edition · Issue No. 1</span>
+    </div>
+    <h1>Write it once, <span>fix it once.</span></h1>
+    <p class="tagline"> <Strong>The two reasons requests bounce back — and the quick fixes that stop it.</Strong></p>
+  </div>
+
+  <div class="content">
+
+    <div class="bounce-strip">
+      <div class="bounce-card">
+        <span class="tag">BOUNCE REASON</span>
+        <b>Not enough info</b>
+        <span>Dev doesn't have enough to act on — the #1 reason requests get sent back.</span>
+      </div>
+      <div class="bounce-card">
+        <span class="tag">BOUNCE REASON</span>
+        <b>Weak repro steps</b>
+        <span>Copy-pasted from the case instead of written as steps a developer can actually follow.</span>
+      </div>
+    </div>
+
+    <span class="grid-label">THE FIX: GET THESE FIELDS RIGHT</span>
+    <div class="tip-grid">
+
+      <div class="tip-card">
+        <b>Found in Phase</b>
+        <span>Select the appropriate affected environment on where the customer experienced the issue (Live vs. UAT, not where engineers reproduced it), because it's often misreported and determines how urgently DEV respond.</span>
+      </div>
+
+      <div class="tip-card">
+        <b>System Revision</b>
+        <span>It should be filled in accurately with the customer's actual app version (e.g., Platform ERP 9.15.1), since it's often misreported or misunderstood and the version where the issue occurs is critical for triage.</span>
+      </div>
+
+      <div class="tip-card">
+        <b>Functional Area</b>
+        <span>Wrong pick = wrong team = delayed triage.</span>
+      </div>
+
+      <div class="tip-card">
+        <b>Expected &amp; Actual Results</b>
+        <span>Clearly state what is actually happening, and your best understanding of what is the expected result.</span>
+      </div>
+
+      <div class="tip-card">
+        <b>Repro Steps</b>
+        <span>Provide clear, numbered steps a developer can follow to reproduce the issue without production access. Use the DEV Ticket Writer to generate the Repro Steps.</span>
+      </div>
+
+      <div class="tip-card">
+        <b>Attachments</b>
+        <span>Show your analysis — database screenshots, error messages, SQL tables. For error messages, don't just capture the error — capture the whole screen, where it happened, and what you did right before it showed up.</span>
+      </div>
+
+      <div class="tip-card wide">
+        <b>Business Impact</b>
+        <span>What's happening now — not what could happen. Put a number on it if possible.</span>
+        <div class="mini-ex">
+          <div class="bad"><span class="mark">✕</span><span>"Could stop the customer from invoicing."</span></div>
+          <div class="good"><span class="mark">✓</span><span>"Blocking invoicing — $100,000 in lost revenue."</span></div>
+          <div class="bad"><span class="mark">✕</span><span>"Operations halted. Can't build routes." (copied word-for-word into the Do Nothing Impact field too)</span></div>
+          <div class="good"><span class="mark">✓</span><span>"Operations halted — unable to build routes for 30 customers."</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="priority-note">
+      <span>ⓘ</span>
+      <span><b>On Priority:</b> Tag the DEV Request with the priority that matches the AMCS Priority Criteria.</span>
+    </div>
+
+    <div class="priority-grid">
+      <div class="priority-col p1">
+        <div class="p-head">Priority 1</div>
+        <ul>
+          <li>All Systems Down</li>
+          <li>Severely degraded business critical process</li>
+          <li>Significant measurable Financial Impact</li>
+          <li>Major Security Risk-in line with AMCS Security Policy (CVSS 10.0)</li>
+          <li>Escalation from SLT</li>
+          <li>No Acceptable Work-Around</li>
+        </ul>
+      </div>
+      <div class="priority-col p2">
+        <div class="p-head">Priority 2</div>
+        <ul>
+          <li>Degraded business critical process</li>
+          <li>Measurable Financial Impact</li>
+          <li>Data corruption</li>
+          <li>Legislative noncompliance issues</li>
+          <li>Security Risk-in line with AMCS Security Policy (CVSS &gt;9.8)</li>
+          <li>Regardless of if found in UAT or Prod if a defect exists that meets criteria in released version.</li>
+        </ul>
+      </div>
+      <div class="priority-col p3">
+        <div class="p-head">Priority 3</div>
+        <ul>
+          <li>Any other Bug that doesn't meet P1/P2 criteria</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>Salesforce: Tips &amp; Tricks</span>
+    <span>Support ↔ Dev Collaboration Series</span>
+  </div>
+
+</div>
+</body>
+</html>
+
+
+
