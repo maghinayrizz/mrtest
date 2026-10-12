@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Salesforce: Omni-Channel Logins — Tips & Tricks</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --navy:#0B2E4F;
+    --navy-deep:#081F38;
+    --sky:#00A9E0;
+    --paper:#F6F8FA;
+    --ink:#1D2939;
+    --ink-soft:#4A5568;
+    --line:#DCE3EA;
+    --good:#1E7A55;
+    --good-bg:#EAF6EF;
+    --bad:#B4472C;
+    --bad-bg:#FBEDE8;
+    --card:#FFFFFF;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',Arial,sans-serif;
+    font-size:15px;
+    line-height:1.48;
+  }
+
+  .sheet{
+    max-width:720px;
+    margin:0 auto;
+    background:var(--card);
+  }
+
+  .masthead{
+    background:var(--navy-deep);
+    color:#fff;
+    padding:24px 38px 20px;
+  }
+  .masthead-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:11px;
+    letter-spacing:.03em;
+    color:#8FB4D6;
+    margin-bottom:10px;
+  }
+  .masthead h1{
+    font-family:'Sora',Arial,sans-serif;
+    font-weight:800;
+    font-size:24px;
+    line-height:1.2;
+    margin:0 0 4px;
+    letter-spacing:-.01em;
+  }
+  .masthead h1 span{color:var(--sky);}
+  .masthead p.tagline{
+    margin:0;
+    font-size:15px;
+    color:#ffffff;
+    display:inline-block;
+  }
+
+  .content{padding:20px 38px 4px;}
+
+  .bounce-strip{
+    display:flex;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .bounce-card{
+    flex:1;
+    background:var(--bad-bg);
+    border-radius:10px;
+    padding:14px 16px;
+  }
+  .bounce-card .tag{
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.04em;
+    color:var(--bad);
+    margin-bottom:6px;
+    display:block;
+  }
+  .bounce-card b{
+    display:block;
+    color:var(--navy);
+    font-size:14px;
+    margin-bottom:3px;
+  }
+  .bounce-card span{
+    color:var(--ink-soft);
+    font-size:12.5px;
+  }
+
+  .grid-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.04em;
+    color:var(--good);
+    margin:4px 0 10px;
+    display:block;
+  }
+  .tip-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .tip-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+  }
+  .tip-card b{
+    display:block;
+    color:var(--navy);
+    font-size:13.5px;
+    margin-bottom:3px;
+  }
+  .tip-card span{
+    color:var(--ink-soft);
+    font-size:12.5px;
+  }
+  .tip-card.wide{grid-column:1 / -1;
+  	background:#FFF7EA;
+  }
+
+  .mini-ex{
+    margin-top:8px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .mini-ex div{
+    border-radius:6px;
+    padding:6px 10px;
+    font-size:12.5px;
+    display:flex;
+    gap:8px;
+  }
+  .mini-ex .bad{background:var(--bad-bg);color:#7A3620;}
+  .mini-ex .good{background:var(--good-bg);color:#1B5A40;}
+  .mini-ex .mark{font-weight:800;}
+  .mini-ex .bad .mark{color:var(--bad);}
+  .mini-ex .good .mark{color:var(--good);}
+
+
+  .flow{
+    margin-top:10px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+  }
+  .flow .step{
+    position:relative;
+    background:#fff;
+    border:1px solid var(--line);
+    border-top:3px solid var(--sky);
+    border-radius:8px;
+    padding:9px 10px 10px;
+    display:block;
+  }
+  .flow .step i{
+    display:inline-block;
+    font-style:normal;
+    font-family:'Sora',Arial,sans-serif;
+    font-weight:700;
+    font-size:11px;
+    color:#fff;
+    background:var(--navy);
+    border-radius:50%;
+    width:18px;height:18px;
+    line-height:18px;
+    text-align:center;
+    margin-bottom:5px;
+  }
+  .flow .step b{
+    display:block;
+    color:var(--navy);
+    font-size:12.5px;
+    line-height:1.3;
+    margin-bottom:2px;
+  }
+  .flow .step span{
+    display:block;
+    color:var(--good);
+    font-size:12px;
+    font-weight:600;
+  }
+
+  .closing{
+    margin:14px 0 16px;
+    padding:12px 14px;
+    background:var(--good-bg);
+    border-radius:8px;
+    font-size:12.5px;
+    color:#1B5A40;
+  }
+  .closing b{color:var(--good);}
+
+  .footer{
+    padding:16px 38px 20px;
+    border-top:1px solid var(--line);
+    font-size:11px;
+    color:#8A94A3;
+    display:flex;
+    justify-content:space-between;
+  }
+
+  @media (max-width:520px){
+    .masthead,.content,.footer{padding-left:20px;padding-right:20px;}
+    .masthead h1{font-size:21px;}
+    .bounce-strip{flex-direction:column;}
+    .tip-grid{grid-template-columns:1fr;}
+    .priority-grid{grid-template-columns:1fr;}
+    .flow{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="masthead">
+    <div class="masthead-top">
+      <span>GLOBAL CUSTOMER SUPPORT: TIPS &amp; TRICKS</span>
+      <span>Issue No. 2</span>
+    </div>
+    <h1>Salesforce: <span>Omni-Channel Logins</span></h1>
+    <p class="tagline"><strong>Log in at the start of your day, stay available, and keep cases and KPIs on track.</strong></p>
+  </div>
+
+  <div class="content">
+
+    <div class="bounce-strip">
+      <div class="bounce-card">
+        <span class="tag">WHAT'S AT RISK</span>
+        <b>Case allocation and customers</b>
+        <span>Missed logins delay case allocation, uneven workloads, hide team capacity and slow response times for customers.</span>
+      </div>
+      <div class="bounce-card">
+        <span class="tag">WHAT'S AT RISK</span>
+        <b>Efficiency KPIs</b>
+        <span>Omni-Channel activity is a key indicator of availability. When you're not logged in, individual and team KPI reporting becomes less accurate.</span>
+      </div>
+    </div>
+
+    <span class="grid-label">THE FIX: MAKE IT PART OF YOUR DAILY ROUTINE</span>
+    <div class="tip-grid">
+
+      <div class="tip-card">
+        <b>Log in at the start of your shift</b>
+        <span>Open Salesforce Omni-Channel at the beginning of your working day, before you pick up support activities.</span>
+      </div>
+
+      <div class="tip-card">
+        <b>Set your status correctly</b>
+        <span>Make sure your status reflects your actual availability.</span>
+      </div>
+
+      <div class="tip-card">
+        <b>Stay logged in all day</b>
+        <span>Remain logged in throughout the day unless you are on a scheduled break, in training, or attending meetings.</span>
+      </div>
+
+      <div class="tip-card">
+        <b>Update your status promptly</b>
+        <span>Whenever your availability changes, change your status right away so cases route to the right people.</span>
+      </div>
+
+      <div class="tip-card wide">
+        <b>Your day in Omni-Channel</b>
+        <span>Your status should always match what you're doing right now.</span>
+        <div class="flow">
+          <div class="step"><i>1</i><b>Start of shift</b><span>Log in</span></div>
+          <div class="step"><i>2</i><b>Handling cases</b><span>Stay available</span></div>
+          <div class="step"><i>3</i><b>Break, training or meeting</b><span>Update your status</span></div>
+          <div class="step"><i>4</i><b>Back to work</b><span>Update it again</span></div>
+        </div>
+      </div>
+
+    </div>
+
+   
+
+    <div class="closing">
+      <b>Why it matters:</b> Consistent use of Omni-Channel ensures cases are distributed efficiently, individual and team efficiency KPIs are accurately reflected, and we maintain the service levels our customers and stakeholders expect. Thank you for your cooperation and support in improving our operational effectiveness.
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>Global Customer Support: Tips &amp; Tricks</span>
+  </div>
+
+</div>
+</body>
+</html>
+
+
